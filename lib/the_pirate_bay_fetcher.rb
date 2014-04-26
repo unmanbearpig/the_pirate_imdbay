@@ -38,7 +38,7 @@ class ThePirateBayFetcher
       .gsub(/\s+/, ' ')
       .gsub(/([xh]264|2hd|eztv|hdtv|xvid|divx|mkv|720p?|1080[ip]?|dvdscr).*/i, '')
       .gsub(/\w{2,3}rip.*/i, '')
-      .gsub(/\s(19|20)\d{2}.*/i, '')
+      .gsub(/[\s\w](19|20)\d{2}.*/i, '')
       .gsub(/\ss\d\de\d\d.*/i, '')
       .strip
   end
