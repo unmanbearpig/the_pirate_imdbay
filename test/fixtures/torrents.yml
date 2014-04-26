@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  seeders: 1
+  leechers: 1
+  magnet_link: MyString
+  url: MyString
+  torrent_id: 1
+
+two:
+  title: MyString
+  seeders: 1
+  leechers: 1
+  magnet_link: MyString
+  url: MyString
+  torrent_id: 1

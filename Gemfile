@@ -43,4 +43,4 @@ group :development, :test do
   end
 
 gem 'thepiratebay', git: 'https://github.com/unmanbearpig/thepiratebay.git'
-gem 'imdb'
+gem 'imdb', git: 'https://github.com/unmanbearpig/imdb.git'
