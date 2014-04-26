@@ -39,8 +39,16 @@ gem 'spring',        group: :development
 # gem 'debugger', group: [:development, :test]
 
 group :development, :test do
-    gem 'pry-rails'
-  end
+  gem 'pry-rails'
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'gon'
+end
 
 gem 'thepiratebay', git: 'https://github.com/unmanbearpig/thepiratebay.git'
 gem 'imdb', git: 'https://github.com/unmanbearpig/imdb.git'
+
+gem 'haml'
+gem 'foundation-rails'
+
+gem 'puma'
