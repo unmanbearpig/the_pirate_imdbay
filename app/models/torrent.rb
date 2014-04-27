@@ -18,20 +18,24 @@ class Torrent < ActiveRecord::Base
   end
 
   def self.import tpb_torrent
-    torrent = find_or_initialize_by id: tpb_torrent.torrent_id
-    torrent.title = tpb_torrent.title
-    torrent.seeders = tpb_torrent.seeders
-    torrent.leechers = tpb_torrent.leechers
-    torrent.magnet_link = tpb_torrent.magnet_link
+    torrent = find_or_initialize_by id: tpb_torrent.id
+    torrent.update_data tpb_torrent
+    torrent.save! ? torrent : nil
+  end
 
-    matching_movies = Movie.search_by_torrent tpb_torrent
+  def update_data tpb_torrent
+    self.title = tpb_torrent.title
+    self.seeders = tpb_torrent.seeders
+    self.leechers = tpb_torrent.leechers
+    self.magnet_link = tpb_torrent.magnet_link
 
-    unless matching_movies.empty?
-      first_movie = matching_movies.first
-      torrent.movie = first_movie
+    unless self.movie
+      new_movie = Movie.search_by_torrent tpb_torrent
+      self.movie = new_movie if new_movie
     end
 
-    torrent.save! ? torrent : nil
+    save!
+    self
   end
 
   private
