@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/unmanbearpig/thepiratebay.git
-  revision: d408b82b918ade3ef6cdf85ead02e2394c0b263b
+  revision: 2bc5c20b1cb363da7eab56ff0bc28fa8462e0870
   specs:
     thepiratebay (0.2.0)
       nokogiri
@@ -62,7 +62,7 @@ GEM
     foundation-rails (5.2.2.0)
       railties (>= 3.1.0)
       sass (>= 3.2.0)
-    gon (5.0.1)
+    gon (5.0.4)
       actionpack (>= 2.3.0)
       json
     haml (4.0.5)
@@ -93,7 +93,7 @@ GEM
       slop (~> 3.4)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
-    puma (2.8.1)
+    puma (2.8.2)
       rack (>= 1.1, < 2.0)
     rack (1.5.2)
     rack-test (0.6.2)
