@@ -11,6 +11,10 @@ class ThePirateBayTorrent
     end
   end
 
+  def id
+    torrent_id.to_i
+  end
+
   def respond_to? *args
     torrent_hash.respond_to? *args
   end

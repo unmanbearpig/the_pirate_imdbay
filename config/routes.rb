@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  root 'home#index'
+  get 'top_movies' => 'movies#top_movie_torrents', as: :top_movies
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

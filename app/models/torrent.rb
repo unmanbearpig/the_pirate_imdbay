@@ -4,17 +4,25 @@ class Torrent < ActiveRecord::Base
   belongs_to :movie
 
   def self.search query
+    puts "HTTP tpb search \"#{query}\""
     search_results = ThePirateBayFetcher.search query
     search_results.map { |torrent| import torrent }
   end
 
   def self.top category = ThePirateBay::Category::All
+    puts "HTTP tpb top #{category}"
     results = ThePirateBayFetcher.top category
     results.map { |torrent| import torrent }
   end
 
   def self.top_movies
-    top ThePirateBay::Category::Video_Movies
+    torrents = top ThePirateBay::Category::Video_Movies
+
+    torrents.reduce({}) do |movies, torrent|
+      movies[torrent.movie_id] = {movie: torrent.movie, torrents: []} unless movies.key? torrent.movie_id
+      movies[torrent.movie_id][:torrents].push torrent
+      movies
+    end.map { |k, v| v }
   end
 
   def self.import tpb_torrent
