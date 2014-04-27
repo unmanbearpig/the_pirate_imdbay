@@ -40,8 +40,5 @@ class Torrent < ActiveRecord::Base
 
   private
 
-  def find_movie
-    Movie.search
-  end
 
 end
