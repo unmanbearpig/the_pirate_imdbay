@@ -19,3 +19,4 @@
                         = torrent.title
                     %td= torrent.seeders
                     %td= torrent.leechers
+                    %td= number_to_human_size torrent.size, precision: 2
