@@ -1,0 +1,21 @@
+.row
+  %table
+    %tbody
+      - @movie_torrents.each do |movie_torrents|
+        - movie = movie_torrents[:movie]
+        - torrents = movie_torrents[:torrents]
+        %tr
+          %td
+            %img{src: movie.thumbnail_url}
+          %td
+            %h3
+              %a.has-tip{'data-tooltip' => true, title: movie.title, href: movie.imdb_url}= movie.title
+            %table
+              %tbody
+                - torrents.each do |torrent|
+                  %tr
+                    %td
+                      %a{href: torrent.magnet_link}
+                        = torrent.title
+                    %td= torrent.seeders
+                    %td= torrent.leechers

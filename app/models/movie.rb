@@ -39,7 +39,7 @@ class Movie < ActiveRecord::Base
   end
 
   def self.search_online query
-    puts "Searching Imdb for \"#{query}\""
+    puts "HTTP Imdb search for \"#{query}\""
     movies = Imdb::Search.new(query).movies
 
     if first_movie = import(movies.first)
@@ -50,13 +50,14 @@ class Movie < ActiveRecord::Base
   end
 
   def self.find_by_torrent torrent
-    where(searchable_title: torrent.searchable_title, year: torrent.year)
+    where(searchable_title: torrent.searchable_title, year: torrent.year).first
   end
 
   def self.search_by_torrent torrent
-    movies = find_by_torrent(torrent)
-    return movies if movies && !movies.empty?
+    movie = find_by_torrent(torrent)
+    return movie if movie
 
-    self.search_online "#{torrent.clean_title} #{torrent.year}"
+    self.search_online(torrent.clean_title + (torrent.year ? " #{torrent.year}" : ''))
+      .first
   end
 end
