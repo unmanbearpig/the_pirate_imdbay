@@ -4,6 +4,18 @@ class Movie < ActiveRecord::Base
   has_many :movie_titles
   has_many :torrents
 
+  def thumbnail_url
+    if respond_to?(:poster_url) && poster_url
+      poster_url.gsub(/(.jpg)/, "._V1_SY200_CR1,0,136,200_AL_.jpg")
+    else
+      nil
+    end
+  end
+
+  def imdb_url
+    "http://www.imdb.com/title/tt#{id}/"
+  end
+
   def imdb
     @imdb ||= Imdb::Movie.new id
   end
