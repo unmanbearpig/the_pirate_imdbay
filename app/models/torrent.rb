@@ -36,6 +36,7 @@ class Torrent < ActiveRecord::Base
     self.seeders = tpb_torrent.seeders
     self.leechers = tpb_torrent.leechers
     self.magnet_link = tpb_torrent.magnet_link
+    self.size = tpb_torrent.size
 
     unless self.movie
       new_movie = Movie.search_by_torrent tpb_torrent

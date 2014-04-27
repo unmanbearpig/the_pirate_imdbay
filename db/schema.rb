@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140426092025) do
+ActiveRecord::Schema.define(version: 20140427090441) do
 
   create_table "movies", force: true do |t|
     t.datetime "created_at"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20140426092025) do
     t.integer  "movie_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "size"
   end
 
   add_index "torrents", ["movie_id"], name: "index_torrents_on_movie_id"
