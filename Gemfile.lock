@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/unmanbearpig/imdb.git
-  revision: a1ed3cc215d40291bcb0e4438f76bb7ff01ddfe2
+  revision: f08fbb191860ac5261f92f0daf9fec1593170151
   specs:
     imdb (0.8.1)
       nokogiri (>= 1.6.0)
@@ -83,7 +83,7 @@ GEM
     mime-types (1.25.1)
     mini_portile (0.5.3)
     minitest (5.3.3)
-    multi_json (1.9.2)
+    multi_json (1.9.3)
     nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
     polyglot (0.3.4)
