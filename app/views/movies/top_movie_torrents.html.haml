@@ -1,4 +1,5 @@
 .row
+  %h3 Found #{@movie_torrents.count} titles
   %table
     %tbody
       - @movie_torrents.each do |movie_torrents|
@@ -9,13 +10,17 @@
             %img{src: movie.thumbnail_url}
           %td
             %h3
-              %a.has-tip{'data-tooltip' => true, title: movie.title, href: movie.imdb_url}= movie.title
+              %a.has-tip{'data-tooltip' => true, title: "#{movie.title} - IMDb", href: movie.imdb_url}= movie.title
+              - if movie.year
+                %small= movie.year
             %table
               %tbody
                 - torrents.each do |torrent|
                   %tr
                     %td
                       %a{href: torrent.magnet_link}
+                        %img{src: '/magnet_icon.gif'}
+                      %a{href: torrent.url}
                         = torrent.title
                     %td= torrent.seeders
                     %td= torrent.leechers
