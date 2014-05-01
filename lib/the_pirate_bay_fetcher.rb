@@ -52,7 +52,7 @@ class ThePirateBayFetcher
   end
 
   def self.extract_year title
-    match = title.match(/[\[\(\s]((?:19|20)\d\d)[\]\)\s$]/)
+    match = title.match(/\D((?:19|20)\d\d)[\D$]/)
     match ? match[1].to_i : nil
   end
 
