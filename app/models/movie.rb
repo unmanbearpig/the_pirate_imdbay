@@ -29,11 +29,14 @@ class Movie < ActiveRecord::Base
   end
 
   def self.import imdb_movie
+    return nil unless imdb_movie
+
     movie = find_or_initialize_by id: imdb_movie.id
 
-    movie.title = ThePirateBayFetcher.clean_title imdb_movie.title
+    movie.title = imdb_movie.title
     movie.searchable_title = ThePirateBayFetcher.searchable_title imdb_movie.title
-    movie.year = ThePirateBayFetcher.extract_year imdb_movie.title
+    movie.year = imdb_movie.year
+    movie.poster_url = imdb_movie.poster
 
     movie.save! ? movie : nil
   end
