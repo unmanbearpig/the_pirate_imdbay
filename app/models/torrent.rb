@@ -3,6 +3,10 @@ require 'the_pirate_bay_fetcher'
 class Torrent < ActiveRecord::Base
   belongs_to :movie
 
+  TORRENT_DATA_EXPIRATION_TIME = 1.day
+
+  scope :up_to_date, -> { where 'updated_at > ?', DateTime.now - TORRENT_DATA_EXPIRATION_TIME }
+
   def url
     "https://thepiratebay.se/torrent/#{id}/"
   end
@@ -56,12 +60,34 @@ class Torrent < ActiveRecord::Base
   end
 
   def self.import tpb_torrent
-    torrent = find_or_initialize_by id: tpb_torrent.id
+    Rails.logger.info "Torrent.import"
+
+    torrent = Torrent.where(id: tpb_torrent.id).first
+    return torrent if torrent && torrent.up_to_date?
+
+    torrent = Torrent.new(id: tpb_torrent.id) unless torrent
     torrent.update_data tpb_torrent
     torrent.save! ? torrent : nil
   end
 
+  def self.import_torrents tpb_torrents
+    ids = Set.new(tpb_torrents.map(&:id))
+    up_to_date_torrents = Torrent.where(id: ids.to_a).up_to_date
+    up_to_date_ids = Set.new(up_to_date_torrents.map(&:id))
+
+    not_up_to_date_ids = ids - up_to_date_ids
+
+    tpb_torrents_hash = tpb_torrents.reduce({}) { |hash, torrent| hash[torrent.id] = torrent; hash }
+
+    not_up_to_date_torrents = not_up_to_date_ids.map { |id| tpb_torrents_hash[id] }
+    return up_to_date_torrents + not_up_to_date_torrents.map { |torrent| Torrent.import torrent }
+  end
+
   def update_data tpb_torrent
+    Rails.logger.info "Torrent#update_data"
+
+    return self if up_to_date?
+
     self.title = tpb_torrent.title
     self.seeders = tpb_torrent.seeders
     self.leechers = tpb_torrent.leechers
@@ -70,6 +96,11 @@ class Torrent < ActiveRecord::Base
 
     save!
     self
+  end
+
+  def up_to_date?
+    return nil unless updated_at
+    updated_at > (DateTime.now - TORRENT_DATA_EXPIRATION_TIME)
   end
 
   private
