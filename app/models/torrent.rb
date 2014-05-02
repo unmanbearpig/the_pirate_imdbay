@@ -24,28 +24,35 @@ class Torrent < ActiveRecord::Base
   end
 
   def self.search query, options = {}
+    Rails.logger.info "Torrent.search \"#{query}\""
+
     torrents = fetch_query query
     torrents_with_movies = Movie.assign_movies_to_torrents torrents
     group_by_movies torrents_with_movies, options
   end
 
   def self.top category = ThePirateBay::Category::All, options = {}
+    Rails.logger.info "Torrent.top #{category}"
+
     torrents = fetch_top category
     torrents_with_movies = Movie.assign_movies_to_torrents torrents
     group_by_movies torrents_with_movies, options
   end
 
   def self.fetch_query query
-    puts "HTTP tpb search \"#{query}\""
-    ThePirateBayFetcher.search(query).map { |t| import t }
+    Rails.logger.info "Torrent.fetch_query \"#{query}\""
+
+    import_torrents ThePirateBayFetcher.search(query)
   end
 
   def self.fetch_top category = ThePirateBay::Category::All
-    puts "HTTP tpb top #{category}"
-    ThePirateBayFetcher.top(category).map { |t| import t }
+    Rails.logger.info "Torrent.fetch_top #{category}"
+
+    import_torrents ThePirateBayFetcher.top(category)
   end
 
   def self.group_by_movies torrents, options = {}
+    Rails.logger.info "Torrent.group_by_movies"
     grouped = torrents.reduce({}) do |movies, torrent|
       movies[torrent.movie_id] = { movie: torrent.movie, torrents: [] } unless movies.key? torrent.movie_id
       movies[torrent.movie_id][:torrents].push torrent
@@ -53,7 +60,8 @@ class Torrent < ActiveRecord::Base
     end.map { |k, v| v }
 
     if options[:full_info]
-      grouped.map { |tm| tm[:movie] }.each(&:fetch_info)
+      ids = grouped.select { |tm| tm[:movie] }.map { |tm| tm[:movie].id }
+      Movie.where(id: ids).no_full_info.each { |movie| movie.fetch_info }
     end
 
     grouped
@@ -72,7 +80,7 @@ class Torrent < ActiveRecord::Base
 
   def self.import_torrents tpb_torrents
     ids = Set.new(tpb_torrents.map(&:id))
-    up_to_date_torrents = Torrent.where(id: ids.to_a).up_to_date
+    up_to_date_torrents = Torrent.where(id: ids.to_a).up_to_date.includes(:movie)
     up_to_date_ids = Set.new(up_to_date_torrents.map(&:id))
 
     not_up_to_date_ids = ids - up_to_date_ids
