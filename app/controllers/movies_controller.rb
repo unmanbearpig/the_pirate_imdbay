@@ -3,7 +3,9 @@ class MoviesController < ApplicationController
 
   def top
     category = params[:category] || ThePirateBay::Category::Video_Movies
-    @movie_torrents = Torrent.top(category.to_i).reject { |mt| mt[:movie].nil? }
+    @movie_torrents = Torrent.top(category.to_i, full_info: true).reject { |mt| mt[:movie].nil? }
+    render 'top_movie_torrents'
+  end
     render 'top_movie_torrents'
   end
 end

@@ -13,6 +13,16 @@
               %a.has-tip{'data-tooltip' => true, title: "#{movie.title} - IMDb", href: movie.imdb_url}= movie.title
               - if movie.year
                 %small= movie.year
+
+            %h5.subheader
+              - if movie.director
+                %span
+                  %strong
+                    #{movie.director}#{movie.rating ? ',' : ''}
+              - if movie.rating && movie.votes
+                %span #{movie.rating}
+              - if movie.votes
+                %span / #{number_to_human(movie.votes)} votes
             %table
               %tbody
                 - torrents.each do |torrent|

@@ -19,36 +19,40 @@ class Torrent < ActiveRecord::Base
     @year ||= ThePirateBayFetcher.extract_year title
   end
 
-  def self.search query
+  def self.search query, options = {}
     torrents = fetch_query query
     torrents_with_movies = Movie.assign_movies_to_torrents torrents
-    torrents_grouped_by_movies = group_torrents_by_movies torrents_with_movies
+    group_by_movies torrents_with_movies, options
   end
 
-  def self.top category = ThePirateBay::Category::All
+  def self.top category = ThePirateBay::Category::All, options = {}
     torrents = fetch_top category
     torrents_with_movies = Movie.assign_movies_to_torrents torrents
-    torrents_grouped_by_movies = group_torrents_by_movies torrents_with_movies
+    group_by_movies torrents_with_movies, options
   end
 
   def self.fetch_query query
     puts "HTTP tpb search \"#{query}\""
-
     ThePirateBayFetcher.search(query).map { |t| import t }
   end
 
   def self.fetch_top category = ThePirateBay::Category::All
     puts "HTTP tpb top #{category}"
-
     ThePirateBayFetcher.top(category).map { |t| import t }
   end
 
-  def self.group_torrents_by_movies torrents
-    torrents.reduce({}) do |movies, torrent|
+  def self.group_by_movies torrents, options = {}
+    grouped = torrents.reduce({}) do |movies, torrent|
       movies[torrent.movie_id] = { movie: torrent.movie, torrents: [] } unless movies.key? torrent.movie_id
       movies[torrent.movie_id][:torrents].push torrent
       movies
     end.map { |k, v| v }
+
+    if options[:full_info]
+      grouped.map { |tm| tm[:movie] }.each(&:fetch_info)
+    end
+
+    grouped
   end
 
   def self.import tpb_torrent

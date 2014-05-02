@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140427090441) do
+ActiveRecord::Schema.define(version: 20140502090039) do
 
   create_table "movies", force: true do |t|
     t.datetime "created_at"
@@ -21,6 +21,9 @@ ActiveRecord::Schema.define(version: 20140427090441) do
     t.integer  "year"
     t.string   "director"
     t.string   "poster_url"
+    t.float    "rating"
+    t.integer  "votes"
+    t.string   "plot"
   end
 
   add_index "movies", ["searchable_title"], name: "index_movies_on_searchable_title"
