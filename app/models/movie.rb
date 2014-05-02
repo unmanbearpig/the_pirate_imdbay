@@ -21,11 +21,18 @@ class Movie < ActiveRecord::Base
   end
 
   def fetch_info
+    return true if has_full_data?
+
     self.year = imdb.year
     self.director = imdb.director.first
-    self.poster_url = imdb.poster
+    self.rating = imdb.rating
+    self.votes = imdb.votes
 
     save
+  end
+
+  def has_full_data?
+    self.year && self.director && self.rating && self.votes
   end
 
   def self.import imdb_movie
@@ -133,5 +140,4 @@ class Movie < ActiveRecord::Base
       printer.print(file)
     end
   end
-
 end
